@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>美味小店 - 點餐系統</title>
+  <style>
+    /* 1. 背景圖片與基礎樣式 */
+    body {
+        font-family: sans-serif; margin: 0;
+        background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=80') center/cover fixed;
+    }
+    .page { display: none; padding: 20px; text-align: center; min-height: 100vh; background: rgba(255, 255, 255, 0.95); }
+    .active { display: block; }
+
+    /* 2. 分類與品項樣式 */
+    .category-title { background: #333; color: white; padding: 10px; margin-top: 20px; text-align: left; font-weight: bold; }
+    .menu-item { background: white; border-bottom: 1px solid #ddd; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .qty-input { width: 45px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
+
+    /* 3. 按鈕與底部欄 */
+    .cart-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #222; color: white; padding: 15px 0; display: flex; justify-content: center; gap: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); }
+    button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+    .btn-main { background: #ff9800; color: white; }
+    .btn-go { background: #4CAF50; color: white; }
+    button:active { transform: scale(0.95); }
+  </style>
+</head>
+<body>
+
+<div id="welcome-page" class="page active">
+  <h1 style="margin-top: 100px; font-size: 2.5em;">🍕 歡迎光臨</h1>
+  <p>點擊下方按鈕開始挑選美食</p>
+  <button class="btn-main" style="font-size: 1.2em;" onclick="showPage('menu-page')">進入點餐</button>
+</div>
+
+<div id="menu-page" class="page">
+  <h2>精選菜單</h2>
+
+  <div class="category-title">🍔 主食系列</div>
+  <div class="menu-item">
+    <span>牛肉堡 ($150)</span>
+    <div>
+      <input type="number" id="qty-burger" class="qty-input" value="1" min="1">
+      <button class="btn-main" onclick="addToCart('牛肉堡', 150, 'qty-burger')">加入</button>
+    </div>
+  </div>
+  <div class="menu-item">
+    <span>經典披薩 ($250)</span>
+    <div>
+      <input type="number" id="qty-pizza" class="qty-input" value="1" min="1">
+      <button class="btn-main" onclick="addToCart('經典披薩', 250, 'qty-pizza')">加入</button>
+    </div>
+  </div>
+
+  <div class="category-title">🥤 飲料與點心</div>
+  <div class="menu-item">
+    <span>大份薯條 ($60)</span>
+    <div>
+      <input type="number" id="qty-fries" class="qty-input" value="1" min="1">
+      <button class="btn-main" onclick="addToCart('大份薯條', 60, 'qty-fries')">加入</button>
+    </div>
+  </div>
+
+  <div class="cart-bar">
+    <button class="btn-go" onclick="checkout()">確認結帳傳送訂單</button>
+  </div>
+</div>
+
+<div id="success-page" class="page">
+  <h1 style="color: #4CAF50; margin-top: 80px;">下單成功！</h1>
+  <p>您的取餐號碼為：</p>
+  <h1 id="order-num-display" style="font-size: 80px; color: #ff5722;">--</h1>
+  <p>請至櫃檯出示此畫面並付款</p>
+  <button class="btn-main" onclick="location.reload()">回首頁 (清除紀錄)</button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.x/firebase-app.js";
+  import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/9.x/firebase-database.js";
+
+  // *** 請替換成你的 Firebase Config ***
+  const firebaseConfig = {
+      apiKey: "你的API金鑰",
+      authDomain: "你的專案.firebaseapp.com",
+      databaseURL: "https://你的專案.firebaseio.com",
+      projectId: "你的專案ID",
+      storageBucket: "你的專案.appspot.com",
+      messagingSenderId: "你的發送ID",
+      appId: "你的AppID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  let cart = [];
+
+  // 全域函數：切換頁面
+  window.showPage = (id) => {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+  };
+
+  // 全域函數：加入購物車 (處理數量)
+  window.addToCart = (name, price, inputId) => {
+      const qty = parseInt(document.getElementById(inputId).value);
+      if (qty <= 0) return alert("請輸入正確數量");
+      cart.push({ name, price, qty });
+      alert(`已加入 ${qty} 份 ${name}`);
+  };
+
+  // 核心邏輯：結帳並處理單號遞增
+  window.checkout = () => {
+      if (cart.length === 0) return alert("請先點餐！");
+
+      // 1. 先讀取目前雲端存到的最新單號 (orderCount)
+      const countRef = ref(db, 'orderCount');
+      onValue(countRef, (snapshot) => {
+          let currentCount = snapshot.val() || 1;
+
+          // 2. 將訂單推送到雲端
+          const ordersRef = ref(db, 'orders');
+          push(ordersRef, {
+              id: currentCount,
+              items: cart,
+              time: new Date().toLocaleTimeString(),
+              total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
+          }).then(() => {
+              // 3. 成功後，將單號 +1 存回雲端
+              set(countRef, currentCount + 1);
+              document.getElementById('order-num-display').innerText = currentCount;
+              cart = [];
+              showPage('success-page');
+          });
+      }, { onlyOnce: true }); // 確保只讀取一次，避免無限循環
+  };
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分類點餐系統</title>
+    <style>
+        /* 1. 背景圖片與基礎樣式 */
+        body {
+            font-family: sans-serif; margin: 0;
+            background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=80') center/cover fixed;
+        }
+        .page { display: none; padding: 20px; text-align: center; min-height: 100vh; background: rgba(255, 255, 255, 0.95); }
+        .active { display: block; }
+
+        /* 2. 分類與品項樣式 */
+        .category-title { background: #333; color: white; padding: 10px; margin-top: 20px; text-align: left; font-weight: bold; }
+        .menu-item { background: white; border-bottom: 1px solid #ddd; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .qty-input { width: 45px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
+
+        /* 3. 按鈕與底部欄 */
+        .cart-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #222; color: white; padding: 15px 0; display: flex; justify-content: center; gap: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); }
+        button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-main { background: #ff9800; color: white; }
+        .btn-go { background: #4CAF50; color: white; }
+        button:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+<div id="welcome-page" class="page active">
+    <h1>🍕 歡迎光臨</h1>
+    <button onclick="showPage('menu-page')">進入點餐</button>
+    <a href="https://www.google.com" target="_blank">
+        <button style="background: #2196F3; color: white;">查看官網</button>
+    </a>
+</div>
+
+<div id="menu-page" class="page">
+    <h2>精選菜單</h2>
+
+    <div class="category-title">項目 A：主食類</div>
+    <div class="menu-item">
+        <span>🍔 牛肉堡 ($150)</span>
+        <div>
+            <input type="number" id="qty-burger" class="qty-input" value="1" min="1">
+            <button class="btn-add" onclick="addToCart('牛肉堡', 150, 'qty-burger')">加入</button>
+        </div>
+    </div>
+    <div class="menu-item">
+        <span>🍕 披薩 ($250)</span>
+        <div>
+            <input type="number" id="qty-pizza" class="qty-input" value="1" min="1">
+            <button class="btn-add" onclick="addToCart('披薩', 250, 'qty-pizza')">加入</button>
+        </div>
+    </div>
+
+    <div class="category-title">項目 B：點心與飲料</div>
+    <div class="menu-item">
+        <span>🍟 薯條 ($60)</span>
+        <div>
+            <input type="number" id="qty-fries" class="qty-input" value="1" min="1">
+            <button class="btn-add" onclick="addToCart('薯條', 60, 'qty-fries')">加入</button>
+        </div>
+    </div>
+    <div class="menu-item">
+        <span>🥤 可樂 ($30)</span>
+        <div>
+            <input type="number" id="qty-coke" class="qty-input" value="1" min="1">
+            <button class="btn-add" onclick="addToCart('可樂', 30, 'qty-coke')">加入</button>
+        </div>
+    </div>
+
+    <div class="cart-bar">
+        <button class="btn-go" onclick="showPage('cart-page')">查看購物車</button>
+        <button style="background:#f44336; color:white;" onclick="checkout()">直接結帳</button>
+    </div>
+</div>
+
+<div id="cart-page" class="page">
+    <h2>🛒 您的訂單</h2>
+    <div id="cart-list" style="text-align: left; background: white; padding: 15px; border-radius: 10px;"></div>
+    <br>
+    <button onclick="showPage('menu-page')">繼續加點</button>
+    <button class="btn-go" onclick="checkout()">確認結帳</button>
+</div>
+
+<div id="success-page" class="page">
+    <h2>下單成功！</h2>
+    <p>您的取餐號碼：</p>
+    <h1 id="order-num" style="font-size: 80px; color: #ff5722;">1</h1>
+    <button onclick="location.reload()">回首頁 (重設)</button>
+</div>
+
+<script>
+    let cart = [];
+    let orderCount = 1;
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(id === 'cart-page') renderCart();
+    }
+
+    // 修改後的加入購物車：會讀取輸入框的數量
+    function addToCart(name, price, inputId) {
+        const qty = parseInt(document.getElementById(inputId).value);
+        if (qty <= 0) return;
+
+        // 檢查購物車是否已有相同商品，有的話直接加數量
+        let found = cart.find(item => item.name === name);
+        if (found) {
+            found.qty += qty;
+        } else {
+            cart.push({ name, price, qty });
+        }
+        alert(`已加入 ${qty} 份 ${name}`);
+    }
+
+    function renderCart() {
+        const list = document.getElementById('cart-list');
+        if (cart.length === 0) {
+            list.innerHTML = "<p>尚未選擇餐點</p>";
+            return;
+        }
+        let html = "<ul>";
+        let total = 0;
+        cart.forEach(item => {
+            html += `<li>${item.name} x ${item.qty} = $${item.price * item.qty}</li>`;
+            total += item.price * item.qty;
+        });
+        html += `</ul><hr><h3>總金額：$${total}</h3>`;
+        list.innerHTML = html;
+    }
+
+    function checkout() {
+        if (cart.length === 0) return alert("請先點餐！");
+        document.getElementById('order-num').innerText = orderCount++;
+        showPage('success-page');
+        cart = []; // 清空購物車
+    }
+</script>
+</body>
+</html>
