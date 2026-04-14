@@ -26,7 +26,7 @@ body {
 .overlay h1 {
     font-size: 2.5rem;       /* 1. 字體大小：2.5rem 在手機上很大很清楚 */
     color: #ffffff;          /* 2. 字體顏色：純白色 */
-    padding-up: 0px;
+    margin-up: 0px;
     margin-bottom: 1px;     /* 3. 下方間距：跟按鈕保持一點距離 */
     letter-spacing: 2px;     /* 4. 字距：讓字與字之間撐開，比較有設計感 */
     text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* 5. 文字陰影：讓字在背景上更立體 */
