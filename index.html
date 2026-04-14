@@ -71,9 +71,13 @@
 </div>
 
 <div id="cart-page" style="display:none;" class="container">
-    <button class="back-link" onclick="showPage('menu-page')">← 繼續點餐</button>
+    <div class="header">
+        <button class="back-link" onclick="showPage('menu-page')">← 繼續點餐</button>
+    </div>
     <h2>確認您的訂單</h2>
-    <div id="cart-list"></div>
+
+    <div id="cart-list" class="cart-container"></div>
+
     <div class="cart-footer">
         <h3>總計: $<span id="total-amount">0</span></h3>
         <button class="checkout-btn" onclick="submitOrder()">確認下單</button>

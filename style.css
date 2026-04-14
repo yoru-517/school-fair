@@ -138,3 +138,60 @@ body {
     text-align: center;
     margin: 30px 0;
 }
+/* 1. 購物車標題與內容列 */
+.cart-header, .cart-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    text-align: center; /* 讓文字在欄位內置中 */
+}
+
+/* 2. 關鍵：設定每一欄的比例 */
+/* 我們有四欄：品名、單價、數量、小計。讓它們平均分配寬度 */
+.cart-header span,
+.cart-row > span,
+.cart-row > div {
+    flex: 1;
+    font-size: 0.9rem;
+    white-space: nowrap; /* 確保絕對是橫書，不換行 */
+}
+
+/* 3. 品名欄位單獨靠左，比較美觀 */
+.c-name {
+    text-align: left !important;
+    font-weight: bold;
+    flex: 1.5 !important; /* 品名通常字比較多，給它多一點點空間 */
+}
+
+/* 4. 標題列美化 */
+.cart-header {
+    background-color: #f8f8f8;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 5px;
+}
+
+/* 5. 購物車內的數量按鈕 */
+.c-qty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.c-qty button {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 3px;
+    cursor: pointer;
+}
+h2 {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}

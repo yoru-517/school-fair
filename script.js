@@ -58,32 +58,45 @@ function updateCartIcon() {
 function renderCart() {
     const list = document.getElementById('cart-list');
     const totalSpan = document.getElementById('total-amount');
-    list.innerHTML = "";
-    let total = 0;
 
+    // 如果購物車沒東西
     if(cart.length === 0) {
-        list.innerHTML = "<p>購物車是空的...</p>";
+        list.innerHTML = "<p style='text-align:center; padding:20px;'>購物車是空的...</p>";
         totalSpan.innerText = "0";
         return;
     }
 
+    // 1. 建立標題列
+    list.innerHTML = `
+        <div class="cart-header">
+            <span>品項</span>
+            <span>單價</span>
+            <span>項數</span>
+            <span>小計</span>
+        </div>
+    `;
+
+    let total = 0;
+
+    // 2. 建立內容列
     cart.forEach((item, index) => {
         const subtotal = item.price * item.quantity;
         total += subtotal;
         list.innerHTML += `
             <div class="cart-row">
-                <div class="cart-info">
-                    <b>${item.name}</b><br>$${item.price}
-                </div>
-                <div class="cart-qty-tool">
+                <span class="c-name">${item.name}</span>
+                <span class="c-price">$${item.price}</span>
+                <div class="c-qty">
                     <button onclick="updateCartItem(${index}, -1)">-</button>
                     <span>${item.quantity}</span>
                     <button onclick="updateCartItem(${index}, 1)">+</button>
                 </div>
-                <div class="cart-sub">$${subtotal}</div>
+                <span class="c-subtotal">$${subtotal}</span>
             </div>
         `;
     });
+
+    // 3. 更新總計數字
     totalSpan.innerText = total;
 }
 

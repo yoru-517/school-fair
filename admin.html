@@ -2,21 +2,41 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>後台管理 - 訂單追蹤</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日研咖啡所 - 後台管理</title>
+  <style>
+    body { font-family: 'PingFang TC', sans-serif; padding: 20px; background: #f4f4f4; color: #333; }
+    h1 { text-align: center; color: #2c3e50; }
+    h2 {
+        background: #fff; padding: 15px; border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-top: 30px;
+    }
+    .order-card {
+        background: white; padding: 20px; margin-bottom: 15px;
+        border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .order-header {
+        display: flex; justify-content: space-between;
+        border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 10px;
+    }
+    .order-num { font-size: 1.3rem; font-weight: bold; color: #e67e22; }
+    .item-list { width: 100%; border-collapse: collapse; margin: 10px 0; }
+    .item-list th { text-align: left; color: #888; font-size: 0.85rem; border-bottom: 1px solid #eee; }
+    .item-list td { padding: 10px 0; border-bottom: 1px solid #fafafa; font-size: 0.95rem; }
+    .total-price { text-align: right; font-size: 1.1rem; font-weight: bold; color: #27ae60; }
+    .status-btn {
+        color: white; border: none; padding: 8px 16px;
+        border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
+    }
+    .status-btn:hover { opacity: 0.8; }
+  </style>
 </head>
 <body>
-<div class="container">
-  <h1>訂單管理系統</h1>
-  <button onclick="resetCounter()" style="background: red; color: white;">重製號碼</button>
 
-  <h2>🕒 未出餐</h2>
-  <div id="pending-list"></div>
+<h1>📋 訂單管理系統</h1>
 
-  <hr>
-
-  <h2>✅ 已出餐</h2>
-  <div id="completed-list"></div>
+<div id="admin-order-list">
+  <p style="text-align: center;">正在同步 Firebase 資料...</p>
 </div>
 
 <script type="module" src="admin.js"></script>
