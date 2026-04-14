@@ -8,13 +8,11 @@ body {
 
 /* 首頁大圖區 */
 .hero-bg {
-    background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80');
+    /* 這裡的路徑要指向你放圖片的位置 */
+    background-image: url('日研咖啡所.jpg');
     height: 100vh;
     background-size: cover;
     background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 .overlay {
     background: rgba(0,0,0,0.7);
