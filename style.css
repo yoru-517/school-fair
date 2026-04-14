@@ -47,9 +47,9 @@ body {
     color: white;
     border: none;
     padding: 12px 25px;
-    margin: 18px;
+    margin: 12px;
     border-radius: 30px;
-    font-size: 1.9rem;
+    font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
 }
