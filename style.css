@@ -1,0 +1,140 @@
+/* 基礎設定 */
+body {
+    font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    margin: 0;
+    background: #fafafa;
+    color: #333;
+}
+
+/* 首頁大圖區 */
+.hero-bg {
+    background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80');
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.overlay {
+    background: rgba(0,0,0,0.7);
+    padding: 30px;
+    border-radius: 15px;
+    color: white;
+    text-align: center;
+}
+
+/* 點餐容器 */
+.container {
+    max-width: 480px;
+    margin: auto;
+    background: white;
+    min-height: 100vh;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+/* 頂部按鈕區 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.header button {
+    padding: 6px 12px;
+    cursor: pointer;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* 菜單項目排版修正 */
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.item-info {
+    flex: 1; /* 讓品名區佔據剩餘空間 */
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.item-name { font-weight: bold; font-size: 1rem; }
+.item-price { color: #e67e22; font-size: 0.9rem; }
+
+/* 數量選擇器 */
+.quantity-picker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.quantity-picker button {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.quantity-picker input {
+    width: 35px;
+    height: 24px;
+    text-align: center;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    border-radius: 4px;
+}
+
+/* 【重點修正】加入按鈕：調整寬度與空間 */
+.add-to-cart-btn {
+    background-color: #e67e22 !important;
+    color: white !important;
+    border: none;
+    padding: 17px 20px !important; /* 增加左右 padding，讓按鈕變寬一點 */
+    font-size: 0.85rem !important;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-left: 10px; /* 增加與 + 號的距離 */
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-direction: row;
+    white-space: nowrap;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #d35400 !important;
+}
+
+/* 下單與結帳 */
+.checkout-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #27ae60 !important;
+    color: white !important;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 25px;
+    cursor: pointer;
+}
+
+.big-number {
+    font-size: 6rem;
+    color: #e67e22;
+    font-weight: bold;
+    text-align: center;
+    margin: 30px 0;
+}

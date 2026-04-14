@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>後台管理 - 訂單追蹤</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h1>訂單管理系統</h1>
+  <button onclick="resetCounter()" style="background: red; color: white;">重製號碼</button>
+
+  <h2>🕒 未出餐</h2>
+  <div id="pending-list"></div>
+
+  <hr>
+
+  <h2>✅ 已出餐</h2>
+  <div id="completed-list"></div>
+</div>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>
