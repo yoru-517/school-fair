@@ -15,7 +15,7 @@ body {
 /* --- 首頁大圖區 (Hero Section) --- */
 .hero-bg {
     background-image: url('日研咖啡所.jpg'); /* 請確保圖片路徑正確 */
-    height: 85vh;
+    height: 100vh;
     background-size: cover;
     background-position: center;
     display: flex;
