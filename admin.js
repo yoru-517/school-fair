@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// 1. Firebase 配置 (與前台一致)
+// 1. Firebase 配置
 const firebaseConfig = {
     apiKey: "AIzaSyCKTxwG2DXXNWUzqSVhiygMV8fodaLyQIk",
     authDomain: "test-f2093.firebaseapp.com",
@@ -28,18 +28,15 @@ onValue(ordersRef, (snapshot) => {
         return;
     }
 
-    // 定義標題區塊
     let pendingHtml = `<h2 style="color: #e74c3c; border-left: 5px solid #e74c3c; padding-left: 10px;">🔴 未出單 (待處理)</h2>`;
     let completedHtml = `<h2 style="color: #27ae60; border-left: 5px solid #27ae60; padding-left: 10px; margin-top: 50px;">🟢 已出單 (已完成)</h2>`;
 
     let pendingCount = 0;
     let completedCount = 0;
 
-    // 將訂單轉為陣列並由新到舊排序
     const ordersArray = Object.entries(data).reverse();
 
     ordersArray.forEach(([id, order]) => {
-        // 建立該筆訂單的品項明細表格
         let itemsHtml = "";
         order.items.forEach(item => {
             itemsHtml += `
@@ -52,7 +49,6 @@ onValue(ordersRef, (snapshot) => {
             `;
         });
 
-        // 建立訂單卡片 HTML
         const orderCardHtml = `
             <div class="order-card">
                 <div class="order-header">
@@ -76,7 +72,6 @@ onValue(ordersRef, (snapshot) => {
             </div>
         `;
 
-        // 根據狀態分類
         if (order.status === 'pending') {
             pendingHtml += orderCardHtml;
             pendingCount++;
@@ -86,17 +81,34 @@ onValue(ordersRef, (snapshot) => {
         }
     });
 
-    // 渲染最終結果
     listDiv.innerHTML =
         (pendingCount > 0 ? pendingHtml : pendingHtml + "<p style='padding:15px;'>暫無待處理訂單</p>") +
         (completedCount > 0 ? completedHtml : completedHtml + "<p style='padding:15px;'>尚無已完成訂單</p>");
 });
 
-// 3. 定義切換狀態的函數（掛載到 window 以便 onclick 調用）
+// 3. 切換訂單狀態 (出單/撤回)
 window.toggleStatus = (id, currentStatus) => {
     const nextStatus = currentStatus === 'pending' ? 'completed' : 'pending';
     const orderRef = ref(db, `orders/${id}`);
-    update(orderRef, { status: nextStatus })
-        .then(() => console.log("訂單狀態已更新"))
-        .catch((error) => console.error("更新失敗:", error));
+    update(orderRef, { status: nextStatus });
+};
+
+// 4. 【新功能】重製/清空資料庫
+window.resetOrders = () => {
+    const check = confirm("⚠️ 確定要刪除「所有」訂單紀錄並重製單號嗎？此動作無法復原！");
+
+    if (check) {
+        // 同時刪除訂單資料和單號計數器
+        const ordersRef = ref(db, 'orders');
+        const counterRef = ref(db, 'counter');
+
+        Promise.all([
+            remove(ordersRef),
+            remove(counterRef)
+        ]).then(() => {
+            alert("✅ 所有資料已清空，單號已從 1 開始重新計算。");
+        }).catch((error) => {
+            alert("❌ 刪除失敗：" + error.message);
+        });
+    }
 };

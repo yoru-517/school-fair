@@ -35,6 +35,25 @@
 
 <h1>📋 訂單管理系統</h1>
 
+<div style="text-align: center; margin-bottom: 20px;">
+  <button id="reset-db-btn" class="reset-btn" onclick="resetOrders()">⚠️ 重製/清空所有訂單</button>
+</div>
+
+<style>
+  /* ...保留之前的樣式... */
+  .reset-btn {
+      background-color: #ff4757;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+  }
+  .reset-btn:hover { background-color: #ff6b81; }
+</style>
+
 <div id="admin-order-list">
   <p style="text-align: center;">正在同步 Firebase 資料...</p>
 </div>
