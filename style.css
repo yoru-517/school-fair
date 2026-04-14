@@ -1,177 +1,175 @@
-/* 基礎設定 */
+/* --- 基礎設定 --- */
+html {
+    font-size: 16px;
+}
+
 body {
     font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
     margin: 0;
     background: #fafafa;
     color: #333;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
 }
 
-/* 首頁大圖區 */
+/* --- 首頁大圖區 (Hero Section) --- */
 .hero-bg {
-    /* 這裡的路徑要指向你放圖片的位置 */
-    background-image: url('日研咖啡所.jpg');
+    background-image: url('日研咖啡所.jpg'); /* 請確保圖片路徑正確 */
     height: 100vh;
     background-size: cover;
     background-position: center;
-}
-.overlay {
-    background: rgba(0,0,0,0.7);
-    padding: 30px;
-    border-radius: 15px;
-    color: white;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* 點餐容器 */
+.overlay {
+    background: rgba(0, 0, 0, 0.65);
+    padding: 40px 20px;
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    width: 85%;
+    max-width: 400px;
+}
+
+.main-btns button {
+    background: #e67e22;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* --- 點餐容器 --- */
 .container {
-    max-width: 480px;
+    max-width: 500px;
+    width: 100%;
     margin: auto;
     background: white;
     min-height: 100vh;
     padding: 20px;
+    box-sizing: border-box; /* 確保 padding 不會撐破寬度 */
     box-shadow: 0 0 15px rgba(0,0,0,0.05);
 }
 
-/* 頂部按鈕區 */
+/* --- 頂部導覽 --- */
 .header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-}
-.header button {
-    padding: 6px 12px;
-    cursor: pointer;
-    background: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 
-/* 菜單項目排版修正 */
+.cart-btn {
+    background: #fdf2e9;
+    color: #e67e22;
+    border: 1px solid #e67e22;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+/* --- 菜單項目 --- */
+.menu-category h3 {
+    margin-top: 30px;
+    border-left: 4px solid #e67e22;
+    padding-left: 10px;
+    color: #444;
+}
+
 .menu-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 20px 0;
+    border-bottom: 1px solid #f9f9f9;
 }
 
-.item-info {
-    flex: 1; /* 讓品名區佔據剩餘空間 */
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    gap: 8px;
+.item-name {
+    display: block;
+    font-weight: bold;
+    font-size: 1.15rem;
 }
 
-.item-name { font-weight: bold; font-size: 1rem; }
-.item-price { color: #e67e22; font-size: 0.9rem; }
+.item-price {
+    color: #e67e22;
+    font-size: 1rem;
+}
 
-/* 數量選擇器 */
+/* --- 數量選擇器與加入按鈕 --- */
 .quantity-picker {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
 }
 
 .quantity-picker button {
-    width: 28px;
-    height: 28px;
-    border: 1px solid #ccc;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ddd;
     background: #fff;
-    cursor: pointer;
-    border-radius: 4px;
+    border-radius: 8px;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
 }
 
 .quantity-picker input {
-    width: 35px;
-    height: 24px;
+    width: 40px;
+    height: 34px;
     text-align: center;
-    border: 1px solid #ccc;
-    font-size: 0.95rem;
+    border: 1px solid #ddd;
+    font-size: 1.1rem;
     border-radius: 4px;
 }
 
-/* 【重點修正】加入按鈕：調整寬度與空間 */
 .add-to-cart-btn {
     background-color: #e67e22 !important;
     color: white !important;
     border: none;
-    padding: 17px 20px !important; /* 增加左右 padding，讓按鈕變寬一點 */
-    font-size: 0.85rem !important;
+    padding: 10px 20px !important;
+    font-size: 1rem !important;
     font-weight: bold;
-    border-radius: 5px;
-    margin-left: 10px; /* 增加與 + 號的距離 */
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s;
-    flex-direction: row;
     white-space: nowrap;
 }
 
-.add-to-cart-btn:hover {
-    background-color: #d35400 !important;
-}
-
-/* 下單與結帳 */
-.checkout-btn {
-    width: 100%;
-    padding: 14px;
-    background-color: #27ae60 !important;
-    color: white !important;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-top: 25px;
-    cursor: pointer;
-}
-
-.big-number {
-    font-size: 6rem;
-    color: #e67e22;
-    font-weight: bold;
-    text-align: center;
-    margin: 30px 0;
-}
-/* 1. 購物車標題與內容列 */
+/* --- 購物車表格樣式 (核心修正) --- */
 .cart-header, .cart-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 15px 0;
     border-bottom: 1px solid #eee;
-    text-align: center; /* 讓文字在欄位內置中 */
+    text-align: center;
 }
 
-/* 2. 關鍵：設定每一欄的比例 */
-/* 我們有四欄：品名、單價、數量、小計。讓它們平均分配寬度 */
-.cart-header span,
-.cart-row > span,
-.cart-row > div {
-    flex: 1;
+.cart-header {
+    background: #f8f8f8;
+    font-weight: bold;
     font-size: 0.9rem;
-    white-space: nowrap; /* 確保絕對是橫書，不換行 */
+    color: #777;
 }
 
-/* 3. 品名欄位單獨靠左，比較美觀 */
+.cart-header span, .cart-row > span, .cart-row > div {
+    flex: 1;
+}
+
 .c-name {
     text-align: left !important;
+    flex: 1.5 !important;
     font-weight: bold;
-    flex: 1.5 !important; /* 品名通常字比較多，給它多一點點空間 */
 }
 
-/* 4. 標題列美化 */
-.cart-header {
-    background-color: #f8f8f8;
-    font-weight: bold;
-    border-bottom: 2px solid #ddd;
-    margin-bottom: 5px;
-}
-
-/* 5. 購物車內的數量按鈕 */
 .c-qty {
     display: flex;
     align-items: center;
@@ -180,16 +178,50 @@ body {
 }
 
 .c-qty button {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
     border: 1px solid #ccc;
     background: white;
-    border-radius: 3px;
+}
+
+/* --- 總計與結帳 --- */
+.cart-footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px solid #333;
+    text-align: right;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 18px;
+    background-color: #27ae60 !important;
+    color: white !important;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-top: 20px;
     cursor: pointer;
 }
-h2 {
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+/* --- 成功頁面 --- */
+.success-center {
+    text-align: center;
+    padding-top: 50px;
+}
+
+.big-number {
+    font-size: 5rem;
+    color: #e67e22;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+/* --- RWD 響應式微調 --- */
+@media (max-width: 400px) {
+    .container { padding: 10px; }
+    .item-name { font-size: 1rem; }
+    .add-to-cart-btn { padding: 8px 12px !important; }
 }
