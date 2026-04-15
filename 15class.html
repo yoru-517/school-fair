@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TW ICE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="home-page" class="hero-bg">
+    <div class="overlay">
+        <h1>TW ICE</h1>
+        <h12>15 class</h12>
+        <div class="main-btns">
+            <button onclick="showPage('menu-page')">開始點餐</button>
+            <button onclick="window.location.href='https://www.instagram.com/cysh_lovenihonn'">官方網站</button>
+        </div>
+    </div>
+</div>
+
+<div id="menu-page" style="display:none;" class="container">
+    <div class="header">
+        <button class="icon-btn" onclick="showPage('home-page')">🏠</button>
+        <button class="cart-btn" onclick="showPage('cart-page')">🛒 購物車 (<span id="cart-count">0</span>)</button>
+    </div>
+
+    <h2>精選菜單</h2>
+
+    <div class="menu-category">
+        <h3>🍔 主食類</h3>
+        <div class="menu-item">
+            <div class="item-info">
+                <span class="item-name">經典漢堡</span>
+                <span class="item-price">$120</span>
+            </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-burger', -1)">-</button>
+                <input type="number" id="qty-burger" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-burger', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('經典漢堡', 120, 'qty-burger')">加入</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="item-info">
+                <span class="item-name">起司披薩</span>
+                <span class="item-price">$200</span>
+            </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-pizza', -1)">-</button>
+                <input type="number" id="qty-pizza" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-pizza', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('起司披薩', 200, 'qty-pizza')">加入</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-category">
+        <h3>🥤 飲料類</h3>
+        <div class="menu-item">
+            <div class="item-info">
+                <span class="item-name">冰紅茶</span>
+                <span class="item-price">$30</span>
+            </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-tea', -1)">-</button>
+                <input type="number" id="qty-tea" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-tea', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('冰紅茶', 30, 'qty-tea')">加入</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="cart-page" style="display:none;" class="container">
+    <div class="header">
+        <button class="back-link" onclick="showPage('menu-page')">← 繼續點餐</button>
+    </div>
+    <h2>確認您的訂單</h2>
+
+    <div id="cart-list" class="cart-container"></div>
+
+    <div class="cart-footer">
+        <h3>總計: $<span id="total-amount">0</span></h3>
+        <button class="checkout-btn" onclick="submitOrder()">確認下單</button>
+    </div>
+</div>
+
+<div id="success-page" style="display:none;" class="container success-center">
+    <div class="success-icon">🎉</div>
+    <h2>下單完成！</h2>
+    <p>您的取餐單號</p>
+    <div id="display-order-number" class="big-number">--</div>
+    <button class="home-btn" onclick="location.reload()">回首頁</button>
+</div>
+
+<script type="module" src="15class.js"></script>
+</body>
+</html>
+
