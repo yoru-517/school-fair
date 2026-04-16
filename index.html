@@ -10,10 +10,10 @@
 <div id="home-page" class="hero-bg">
     <div class="overlay">
         <h1>日研咖啡所</h1>
-        <h11>クールジャパンカフェ</h11>
+        <p class="sub-title">クールジャパンカフェ</p>
         <div class="main-btns">
             <button onclick="showPage('menu-page')">開始點餐</button>
-            <button onclick="window.location.href='https://www.instagram.com/cysh_lovenihonn'">官方網站</button>
+            <button onclick="window.location.href='https://www.instagram.com/cysh_lovenihonn'">官方instagram</button>
         </div>
     </div>
 </div>
@@ -25,7 +25,7 @@
     </div>
 
     <h2>菜單</h2>
-    <h21>メニュー</h21>
+    <p class="sub-title1">メニュー</p>
 
     <div class="menu-category">
         <h3>刨冰</h3>
@@ -35,22 +35,34 @@
                 <span class="item-price">$70</span>
             </div>
             <div class="quantity-picker">
-                <button onclick="changeMenuQty('qty-burger', -1)">-</button>
-                <input type="number" id="qty-burger" value="1" min="1" readonly>
-                <button onclick="changeMenuQty('qty-burger', 1)">+</button>
-                <button class="add-to-cart-btn" onclick="addToCart('經典漢堡', 120, 'qty-burger')">加入</button>
+                <button onclick="changeMenuQty('qty-machaice', -1)">-</button>
+                <input type="number" id="qty-machaice" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-machaice', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('抹茶刨冰', 70, 'qty-machaice')">加入</button>
             </div>
         </div>
         <div class="menu-item">
             <div class="item-info">
-                <span class="item-name">宇治茶</span>
-                <span class="item-price">$60</span>
+                <span class="item-name">彈珠汽水</span>
+                <span class="item-price">$70</span>
             </div>
             <div class="quantity-picker">
-                <button onclick="changeMenuQty('qty-pizza', -1)">-</button>
-                <input type="number" id="qty-pizza" value="1" min="1" readonly>
-                <button onclick="changeMenuQty('qty-pizza', 1)">+</button>
-                <button class="add-to-cart-btn" onclick="addToCart('起司披薩', 200, 'qty-pizza')">加入</button>
+                <button onclick="changeMenuQty('qty-sodaice', -1)">-</button>
+                <input type="number" id="qty-sodaice" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-sodaice', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('彈珠汽水刨冰', 70, 'qty-sodaice')">加入</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="item-info">
+                <span class="item-name">桃子</span>
+                <span class="item-price">$70</span>
+            </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-momoice', -1)">-</button>
+                <input type="number" id="qty-momoice" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-momoice', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('桃子刨冰', 70, 'qty-momoice')">加入</button>
             </div>
         </div>
     </div>
@@ -59,14 +71,94 @@
         <h3>果凍</h3>
         <div class="menu-item">
             <div class="item-info">
-                <span class="item-name">冰紅茶</span>
-                <span class="item-price">$30</span>
+                <span class="item-name">宇治茶</span>
+                <span class="item-price">$60</span>
             </div>
             <div class="quantity-picker">
-                <button onclick="changeMenuQty('qty-tea', -1)">-</button>
-                <input type="number" id="qty-tea" value="1" min="1" readonly>
-                <button onclick="changeMenuQty('qty-tea', 1)">+</button>
-                <button class="add-to-cart-btn" onclick="addToCart('冰紅茶', 30, 'qty-tea')">加入</button>
+                <button onclick="changeMenuQty('qty-ujitea', -1)">-</button>
+                <input type="number" id="qty-ujitea" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-ujitea', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('宇治茶果凍', 60, 'qty-ujitea')">加入</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="item-info">
+                <span class="item-name">抹茶</span>
+                <span class="item-price">$60</span>
+            </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-macha', -1)">-</button>
+                <input type="number" id="qty-macha" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-macha', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('抹茶果凍', 60, 'qty-macha')">加入</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="item-info">
+                <span class="item-name">桃子</span>
+                <span class="item-price">$60</span>
+            </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-momo', -1)">-</button>
+                <input type="number" id="qty-momo" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-momo', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('桃子果凍', 60, 'qty-momo')">加入</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-category">
+        <h3>飲料</h3>
+        <div class="menu-item">
+            <div class="item-info">
+                <span class="item-name">哈密瓜汽水</span>
+                <span class="item-price">$60</span>
+            </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-melonsoda', -1)">-</button>
+                <input type="number" id="qty-melonsoda" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-melonsoda', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('哈密瓜汽水', 60, 'qty-melonsoda')">加入</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="item-info">
+                <span class="item-name">可爾必思汽水</span>
+                <span class="item-price">$50</span>
+            </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-calpissoda', -1)">-</button>
+                <input type="number" id="qty-calpissoda" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-calpissoda', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('可爾必思汽水', 50, 'qty-calpissoda')">加入</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="item-info">
+                <span class="item-name">蘋果咖啡</span>
+                <span class="item-price">$70</span>
+            </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-applecoffee', -1)">-</button>
+                <input type="number" id="qty-applecoffee" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-applecoffee', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('蘋果咖啡', 70, 'qty-applecoffee')">加入</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-category">
+        <h3>娛樂</h3>
+            <div class="menu-item">
+                <div class="item-info">
+                    <span class="item-name">拍立得</span>
+                    <span class="item-price">$100</span>
+                </div>
+            <div class="quantity-picker">
+                <button onclick="changeMenuQty('qty-photo', -1)">-</button>
+                <input type="number" id="qty-photo" value="1" min="1" readonly>
+                <button onclick="changeMenuQty('qty-photo', 1)">+</button>
+                <button class="add-to-cart-btn" onclick="addToCart('拍立得', 100, 'qty-photo')">加入</button>
             </div>
         </div>
     </div>
