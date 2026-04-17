@@ -3,60 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>日研咖啡所 - 後台管理</title>
-  <style>
-    body { font-family: 'PingFang TC', sans-serif; padding: 20px; background: #f4f4f4; color: #333; }
-    h1 { text-align: center; color: #2c3e50; }
-    h2 {
-        background: #fff; padding: 15px; border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-top: 30px;
-    }
-    .order-card {
-        background: white; padding: 20px; margin-bottom: 15px;
-        border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .order-header {
-        display: flex; justify-content: space-between;
-        border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 10px;
-    }
-    .order-num { font-size: 1.3rem; font-weight: bold; color: #e67e22; }
-    .item-list { width: 100%; border-collapse: collapse; margin: 10px 0; }
-    .item-list th { text-align: left; color: #888; font-size: 0.85rem; border-bottom: 1px solid #eee; }
-    .item-list td { padding: 10px 0; border-bottom: 1px solid #fafafa; font-size: 0.95rem; }
-    .total-price { text-align: right; font-size: 1.1rem; font-weight: bold; color: #27ae60; }
-    .status-btn {
-        color: white; border: none; padding: 8px 16px;
-        border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
-    }
-    .status-btn:hover { opacity: 0.8; }
-  </style>
+  <title>日研咖啡所 - 專業後台管理</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>📋 訂單管理系統</h1>
+<header>
+  <div style="font-size: 1.5rem; font-weight: bold;">☕ クールジャパンカフェ（日研咖啡所） | 管理後台</div>
+  <button class="reset-btn" onclick="resetOrders()">⚠️ 清空訂單</button>
+</header>
 
-<div style="text-align: center; margin-bottom: 20px;">
-  <button id="reset-db-btn" class="reset-btn" onclick="resetOrders()">⚠️ 重製/清空所有訂單</button>
-</div>
+<nav class="admin-nav">
+  <button class="nav-btn active" onclick="switchTab('dashboard')">📌 即時桌位狀態</button>
+  <button class="nav-btn" onclick="switchTab('details')">📋 訂單詳細明細</button>
+</nav>
 
-<style>
-  /* ...保留之前的樣式... */
-  .reset-btn {
-      background-color: #ff4757;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 0.9rem;
-  }
-  .reset-btn:hover { background-color: #ff6b81; }
-</style>
+<main class="main-layout">
 
-<div id="admin-order-list">
-  <p style="text-align: center;">正在同步 Firebase 資料...</p>
-</div>
+  <div id="tab-dashboard" class="tab-content active">
+    <h2 style="margin: 0 0 15px 0; font-size: 1.2rem;">📌 即時桌位狀態</h2>
+    <div class="table-grid">
+      <div id="table-card-1" class="table-card"><h3>1 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-2" class="table-card"><h3>2 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-3" class="table-card"><h3>3 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-4" class="table-card"><h3>4 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-5" class="table-card"><h3>5 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
+    </div>
+    <p style="font-size: 0.8rem; color: #7f8c8d; margin-top: 10px;">※ 顯示該桌最新一筆未結單資訊</p>
+  </div>
+
+  <div id="tab-details" class="tab-content">
+    <div class="detail-header">
+      <span style="font-weight: bold; font-size: 1.2rem;">📋 訂單明細</span>
+      <select id="detail-table-select" onchange="filterDetails()">
+        <option value="all">全部</option>
+        <option value="1">1 號桌</option>
+        <option value="2">2 號桌</option>
+        <option value="3">3 號桌</option>
+        <option value="4">4 號桌</option>
+        <option value="5">5 號桌</option>
+      </select>
+    </div>
+
+    <div class="status-columns">
+      <div class="column col-pending">
+        <h4>點餐中</h4>
+        <div id="list-pending" class="order-list"></div>
+      </div>
+      <div class="column col-served">
+        <h4>已出餐</h4>
+        <div id="list-served" class="order-list"></div>
+      </div>
+      <div class="column col-completed">
+        <h4>已結單</h4>
+        <div id="list-completed" class="order-list"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
 
 <script type="module" src="admin.js"></script>
 </body>

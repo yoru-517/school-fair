@@ -1,114 +1,194 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// 1. Firebase 配置
+// Firebase 配置 (延用你提供的設定)
 const firebaseConfig = {
-    apiKey: "AIzaSyCKTxwG2DXXNWUzqSVhiygMV8fodaLyQIk",
-    authDomain: "test-f2093.firebaseapp.com",
-    databaseURL: "https://test-f2093-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "test-f2093",
-    storageBucket: "test-f2093.firebasestorage.app",
-    messagingSenderId: "292657752780",
-    appId: "1:292657752780:web:a7d5e885c529373b2d3069"
+  apiKey: "AIzaSyCKTxwG2DXXNWUzqSVhiygMV8fodaLyQIk",
+  authDomain: "test-f2093.firebaseapp.com",
+  databaseURL: "https://test-f2093-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "test-f2093",
+  storageBucket: "test-f2093.firebasestorage.app",
+  messagingSenderId: "292657752780",
+  appId: "1:292657752780:web:a7d5e885c529373b2d3069",
+  measurementId: "G-1XEY4BQRDF"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 2. 監聽訂單
-const ordersRef = ref(db, 'orders');
+let allOrders = {}; // 用來存放所有訂單的快照
 
-onValue(ordersRef, (snapshot) => {
-    const data = snapshot.val();
-    const listDiv = document.getElementById('admin-order-list');
-    listDiv.innerHTML = "";
-
-    if (!data) {
-        listDiv.innerHTML = "<p style='text-align:center;'>目前尚無任何訂單資料。</p>";
-        return;
-    }
-
-    let pendingHtml = `<h2 style="color: #e74c3c; border-left: 5px solid #e74c3c; padding-left: 10px;">🔴 未出單 (待處理)</h2>`;
-    let completedHtml = `<h2 style="color: #27ae60; border-left: 5px solid #27ae60; padding-left: 10px; margin-top: 50px;">🟢 已出單 (已完成)</h2>`;
-
-    let pendingCount = 0;
-    let completedCount = 0;
-
-    const ordersArray = Object.entries(data).reverse();
-
-    ordersArray.forEach(([id, order]) => {
-        let itemsHtml = "";
-        order.items.forEach(item => {
-            itemsHtml += `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>$${item.price}</td>
-                    <td>x${item.quantity}</td>
-                    <td>$${item.price * item.quantity}</td>
-                </tr>
-            `;
-        });
-
-        const orderCardHtml = `
-            <div class="order-card">
-                <div class="order-header">
-                    <span class="order-num">單號：#${order.orderNum}</span>
-                    <span style="color: #888; font-size: 0.85rem;">${new Date(order.time).toLocaleString()}</span>
-                </div>
-                <table class="item-list">
-                    <thead>
-                        <tr><th>品項</th><th>單價</th><th>數量</th><th>小計</th></tr>
-                    </thead>
-                    <tbody>${itemsHtml}</tbody>
-                </table>
-                <div class="total-price">總計：$${order.total}</div>
-                <div style="margin-top:15px; text-align: right;">
-                    <button class="status-btn"
-                        style="background: ${order.status === 'pending' ? '#27ae60' : '#95a5a6'}"
-                        onclick="toggleStatus('${id}', '${order.status}')">
-                        ${order.status === 'pending' ? '點擊出單 ✅' : '設為未出單 ⏳'}
-                    </button>
-                </div>
-            </div>
-        `;
-
-        if (order.status === 'pending') {
-            pendingHtml += orderCardHtml;
-            pendingCount++;
-        } else {
-            completedHtml += orderCardHtml;
-            completedCount++;
-        }
-    });
-
-    listDiv.innerHTML =
-        (pendingCount > 0 ? pendingHtml : pendingHtml + "<p style='padding:15px;'>暫無待處理訂單</p>") +
-        (completedCount > 0 ? completedHtml : completedHtml + "<p style='padding:15px;'>尚無已完成訂單</p>");
+// --- 1. 核心監聽邏輯 ---
+onValue(ref(db, 'orders'), (snapshot) => {
+    allOrders = snapshot.val() || {};
+    refreshDashboard(); // 更新總覽分頁的內容
+    filterDetails();    // 更新明細分頁的內容
 });
 
-// 3. 切換訂單狀態 (出單/撤回)
-window.toggleStatus = (id, currentStatus) => {
-    const nextStatus = currentStatus === 'pending' ? 'completed' : 'pending';
-    const orderRef = ref(db, `orders/${id}`);
-    update(orderRef, { status: nextStatus });
+// --- 2. [新功能] 分頁切換邏輯 ---
+window.switchTab = (tabName) => {
+    // 1. 處理導覽列按鈕樣式 (利用 event 抓取點擊的按鈕)
+    const btns = document.querySelectorAll('.nav-btn');
+    btns.forEach(btn => btn.classList.remove('active'));
+    if (event) {
+        event.currentTarget.classList.add('active');
+    }
+
+    // 2. 切換內容區塊顯示 (tab-dashboard 或 tab-details)
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+
+    // 如果切換到明細頁面，確保內容是最新的
+    if (tabName === 'details') {
+        filterDetails();
+    }
 };
 
-// 4. 【新功能】重製/清空資料庫
-window.resetOrders = () => {
-    const check = confirm("⚠️ 確定要刪除「所有」訂單紀錄並重製單號嗎？此動作無法復原！");
+// --- 3. 更新即時桌位狀態 (Dashboard) ---
+// --- 2. 更新即時桌位狀態 (Dashboard) ---
+function refreshDashboard() {
+    for (let i = 1; i <= 5; i++) {
+        const card = document.getElementById(`table-card-${i}`);
+        if (!card) continue;
+        const content = card.querySelector('.card-content');
 
-    if (check) {
-        // 同時刪除訂單資料和單號計數器
+        card.classList.remove('active', 'status-served'); // 清除舊狀態
+        content.innerHTML = `<span class="empty-hint">無未結訂單</span>`;
+    }
+
+    const sortedEntries = Object.entries(allOrders).sort((a, b) => b[1].time - a[1].time);
+    const filledTables = {};
+
+    sortedEntries.forEach(([id, order]) => {
+        const tNum = order.tableNum;
+        // 只顯示尚未結單 (pending 或 served) 的最新訂單
+        if (order.status !== 'completed' && !filledTables[tNum]) {
+            const card = document.getElementById(`table-card-${tNum}`);
+            if (card) {
+                const content = card.querySelector('.card-content');
+                card.classList.add('active');
+
+                // 如果已經出餐，加上變色類別
+                if (order.status === 'served') {
+                    card.classList.add('status-served');
+                }
+
+                content.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div style="font-weight:bold; color:#e67e22;">${order.tableDisplay}</div>
+                        <span class="status-badge ${order.status}">${order.status === 'pending' ? '製作中' : '已出餐'}</span>
+                    </div>
+                    <div style="font-size:0.85rem; margin:8px 0;">時間: ${new Date(order.time).toLocaleTimeString()}</div>
+                    <div style="font-size:0.9rem; background:#fdfdfd; padding:8px; border-radius:5px; border:1px solid #eee;">
+                        ${order.items.map(i => i.name + ' x' + i.quantity).join('<br>')}
+                    </div>
+                    <div style="margin-top:15px; display:flex; gap:10px; align-items:center; justify-content:space-between;">
+                        <span style="color:#27ae60; font-weight:bold;">$${order.total}</span>
+                        <button class="btn-s ${order.status === 'pending' ? 'btn-v' : 'btn-p'}"
+                                onclick="changeStatus('${id}', '${order.status === 'pending' ? 'served' : 'pending'}')">
+                            ${order.status === 'pending' ? '點擊出餐 ✅' : '撤回製作 ⏳'}
+                        </button>
+                    </div>
+                `;
+                filledTables[tNum] = true;
+            }
+        }
+    });
+}
+
+// --- 4. 更新詳細資訊 (依下拉選單過濾) ---
+window.filterDetails = () => {
+    const tableSelect = document.getElementById('detail-table-select');
+    if (!tableSelect) return;
+
+    const selectedTable = tableSelect.value;
+    const pendingList = document.getElementById('list-pending');
+    const servedList = document.getElementById('list-served');
+    const completedList = document.getElementById('list-completed');
+
+    pendingList.innerHTML = "";
+    servedList.innerHTML = "";
+    completedList.innerHTML = "";
+
+    const sortedEntries = Object.entries(allOrders).sort((a, b) => b[1].time - a[1].time);
+
+    sortedEntries.forEach(([id, order]) => {
+        if (selectedTable === 'all' || order.tableNum == selectedTable) {
+
+            // --- 核心邏輯：根據 status 決定顯示哪些按鈕 ---
+            let buttonsHtml = "";
+
+            if (order.status === 'pending') {
+                // 在「點餐中」，只顯示「出餐」和「結單」
+                buttonsHtml = `
+                    <button class="btn-s btn-v" onclick="changeStatus('${id}', 'served')">出餐</button>
+                    <button class="btn-s btn-c" onclick="changeStatus('${id}', 'completed')">結單</button>
+                `;
+            } else if (order.status === 'served') {
+                // 在「已出餐」，顯示「回撥點餐」和「結單」
+                buttonsHtml = `
+                    <button class="btn-s btn-p" onclick="changeStatus('${id}', 'pending')">退回點餐</button>
+                    <button class="btn-s btn-c" onclick="changeStatus('${id}', 'completed')">結單</button>
+                `;
+            } else if (order.status === 'completed') {
+                // 在「已結單」，顯示「回撥點餐」和「回撥出餐」
+                buttonsHtml = `
+                    <button class="btn-s btn-p" onclick="changeStatus('${id}', 'pending')">退回點餐</button>
+                    <button class="btn-s btn-v" onclick="changeStatus('${id}', 'served')">退回出餐</button>
+                `;
+            }
+
+            const orderHtml = `
+                <div class="mini-order-card" style="border-left-color: ${getStatusColor(order.status)}">
+                    <h5>${order.tableDisplay} <span style="font-size:0.8rem; color:#888;">(#${order.orderNum})</span></h5>
+                    <p style="font-size:0.75rem; color:#999;">${new Date(order.time).toLocaleTimeString()}</p>
+                    <div style="margin:8px 0;">
+                        ${order.items.map(i => `<div style="display:flex; justify-content:space-between;"><span>${i.name}</span><span>x${i.quantity}</span></div>`).join('')}
+                    </div>
+                    <div style="text-align:right; font-weight:bold; color:#2c3e50; border-top:1px solid #eee; padding-top:5px;">$${order.total}</div>
+
+                    <div class="btn-group">
+                        ${buttonsHtml}
+                    </div>
+                </div>
+            `;
+
+            if (order.status === 'pending') pendingList.innerHTML += orderHtml;
+            else if (order.status === 'served') servedList.innerHTML += orderHtml;
+            else if (order.status === 'completed') completedList.innerHTML += orderHtml;
+        }
+    });
+};
+
+// 狀態顏色輔助
+function getStatusColor(status) {
+    if (status === 'pending') return '#e67e22';
+    if (status === 'served') return '#3498db';
+    return '#27ae60';
+}
+
+// --- 5. 修改狀態功能 ---
+window.changeStatus = (id, newStatus) => {
+    const orderRef = ref(db, `orders/${id}`);
+    update(orderRef, { status: newStatus });
+};
+
+// --- 6. 重製/清空資料 ---
+window.resetOrders = () => {
+    if (confirm("⚠️ 警告：這將清空所有桌位組數、單號計數與訂單紀錄。\n確定要重製嗎？")) {
         const ordersRef = ref(db, 'orders');
         const counterRef = ref(db, 'counter');
+        const tableSessionsRef = ref(db, 'tableSessions');
 
         Promise.all([
             remove(ordersRef),
-            remove(counterRef)
+            remove(counterRef),
+            remove(tableSessionsRef)
         ]).then(() => {
-            alert("✅ 所有資料已清空，單號已從 1 開始重新計算。");
-        }).catch((error) => {
-            alert("❌ 刪除失敗：" + error.message);
+            alert("資料庫已重製完成！");
+        }).catch(err => {
+            alert("重製失敗：" + err.message);
         });
     }
 };

@@ -7,14 +7,33 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="home-page" class="hero-bg">
+<div id="home-page" class="head-p">
     <div class="overlay">
         <h1>日研咖啡所</h1>
         <p class="sub-title">クールジャパンカフェ</p>
         <div class="main-btns">
-            <button onclick="showPage('menu-page')">開始點餐</button>
+            <button onclick="showPage('table-page')">開始點餐</button>
             <button onclick="window.location.href='https://www.instagram.com/cysh_lovenihonn'">官方instagram</button>
         </div>
+    </div>
+</div>
+
+<div id="table-page" style="display:none" class="container">
+
+    <div class="header">
+        <button class="icon-btn" onclick="showPage('home-page')">🏠</button>
+    </div>
+
+    <div class="table-selector" style="margin-bottom: 20px;">
+        <label for="table-num" style="font-weight: bold; display: block; margin-bottom: 5px;">請選擇桌號：</label>
+        <select id="table-num" style="width: 100%; padding: 12px; font-size: 1.1rem; border-radius: 8px; border: 1px solid #ddd;">
+            <option value="1">1 號桌</option>
+            <option value="2">2 號桌</option>
+            <option value="3">3 號桌</option>
+            <option value="4">4 號桌</option>
+            <option value="5">5 號桌</option>
+        </select>
+        <button class="checkout-btn" onclick="showPage('menu-page')">完成選擇</button>
     </div>
 </div>
 
