@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// Firebase 配置 (延用你提供的設定)
+// Firebase 配置
 const firebaseConfig = {
   apiKey: "AIzaSyCKTxwG2DXXNWUzqSVhiygMV8fodaLyQIk",
   authDomain: "test-f2093.firebaseapp.com",
@@ -16,44 +16,47 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let allOrders = {}; // 用來存放所有訂單的快照
+let allOrders = {};
+
+// 桌號對應名稱
+const tableNames = {
+    "1": "雷姆桌", "2": "白上桌", "3": "黑川桌",
+    "4": "有馬桌", "5": "MEN桌", "6": "六飧桌"
+};
 
 // --- 1. 核心監聽邏輯 ---
 onValue(ref(db, 'orders'), (snapshot) => {
     allOrders = snapshot.val() || {};
-    refreshDashboard(); // 更新總覽分頁的內容
-    filterDetails();    // 更新明細分頁的內容
+    refreshDashboard();
+    filterDetails();
 });
 
-// --- 2. [新功能] 分頁切換邏輯 ---
+// --- 2. 分頁切換邏輯 ---
 window.switchTab = (tabName) => {
-    // 1. 處理導覽列按鈕樣式 (利用 event 抓取點擊的按鈕)
     const btns = document.querySelectorAll('.nav-btn');
     btns.forEach(btn => btn.classList.remove('active'));
     if (event) {
         event.currentTarget.classList.add('active');
     }
 
-    // 2. 切換內容區塊顯示 (tab-dashboard 或 tab-details)
     const tabs = document.querySelectorAll('.tab-content');
     tabs.forEach(tab => tab.classList.remove('active'));
     document.getElementById(`tab-${tabName}`).classList.add('active');
 
-    // 如果切換到明細頁面，確保內容是最新的
     if (tabName === 'details') {
         filterDetails();
     }
 };
 
 // --- 3. 更新即時桌位狀態 (Dashboard) ---
-// --- 2. 更新即時桌位狀態 (Dashboard) ---
 function refreshDashboard() {
-    for (let i = 1; i <= 5; i++) {
+    // 【修正】這裡原本是 i <= 5，改為 i <= 6，否則第六桌永遠不會更新
+    for (let i = 1; i <= 6; i++) {
         const card = document.getElementById(`table-card-${i}`);
         if (!card) continue;
         const content = card.querySelector('.card-content');
 
-        card.classList.remove('active', 'status-served'); // 清除舊狀態
+        card.classList.remove('active', 'status-served');
         content.innerHTML = `<span class="empty-hint">無未結訂單</span>`;
     }
 
@@ -62,21 +65,23 @@ function refreshDashboard() {
 
     sortedEntries.forEach(([id, order]) => {
         const tNum = order.tableNum;
-        // 只顯示尚未結單 (pending 或 served) 的最新訂單
         if (order.status !== 'completed' && !filledTables[tNum]) {
             const card = document.getElementById(`table-card-${tNum}`);
             if (card) {
                 const content = card.querySelector('.card-content');
                 card.classList.add('active');
 
-                // 如果已經出餐，加上變色類別
                 if (order.status === 'served') {
                     card.classList.add('status-served');
                 }
 
+                // 【修正】動態查表，將 1桌 轉回 雷姆桌
+                const tName = tableNames[tNum] || `${tNum}號桌`;
+                const displayTitle = order.sessionNum ? `${tName}第${order.sessionNum}組` : order.tableDisplay;
+
                 content.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div style="font-weight:bold; color:#e67e22;">${order.tableDisplay}</div>
+                        <div style="font-weight:bold; color:#e67e22;">${displayTitle}</div>
                         <span class="status-badge ${order.status}">${order.status === 'pending' ? '製作中' : '已出餐'}</span>
                     </div>
                     <div style="font-size:0.85rem; margin:8px 0;">時間: ${new Date(order.time).toLocaleTimeString()}</div>
@@ -116,32 +121,32 @@ window.filterDetails = () => {
     sortedEntries.forEach(([id, order]) => {
         if (selectedTable === 'all' || order.tableNum == selectedTable) {
 
-            // --- 核心邏輯：根據 status 決定顯示哪些按鈕 ---
             let buttonsHtml = "";
 
             if (order.status === 'pending') {
-                // 在「點餐中」，只顯示「出餐」和「結單」
                 buttonsHtml = `
                     <button class="btn-s btn-v" onclick="changeStatus('${id}', 'served')">出餐</button>
                     <button class="btn-s btn-c" onclick="changeStatus('${id}', 'completed')">結單</button>
                 `;
             } else if (order.status === 'served') {
-                // 在「已出餐」，顯示「回撥點餐」和「結單」
                 buttonsHtml = `
                     <button class="btn-s btn-p" onclick="changeStatus('${id}', 'pending')">退回點餐</button>
                     <button class="btn-s btn-c" onclick="changeStatus('${id}', 'completed')">結單</button>
                 `;
             } else if (order.status === 'completed') {
-                // 在「已結單」，顯示「回撥點餐」和「回撥出餐」
                 buttonsHtml = `
                     <button class="btn-s btn-p" onclick="changeStatus('${id}', 'pending')">退回點餐</button>
                     <button class="btn-s btn-v" onclick="changeStatus('${id}', 'served')">退回出餐</button>
                 `;
             }
 
+            // 【修正】動態查表，將明細列表中的 1桌 轉回 雷姆桌
+            const tName = tableNames[order.tableNum] || `${order.tableNum}號桌`;
+            const displayTitle = order.sessionNum ? `${tName}第${order.sessionNum}組` : order.tableDisplay;
+
             const orderHtml = `
                 <div class="mini-order-card" style="border-left-color: ${getStatusColor(order.status)}">
-                    <h5>${order.tableDisplay} <span style="font-size:0.8rem; color:#888;">(#${order.orderNum})</span></h5>
+                    <h5>${displayTitle} <span style="font-size:0.8rem; color:#888;">(#${order.orderNum})</span></h5>
                     <p style="font-size:0.75rem; color:#999;">${new Date(order.time).toLocaleTimeString()}</p>
                     <div style="margin:8px 0;">
                         ${order.items.map(i => `<div style="display:flex; justify-content:space-between;"><span>${i.name}</span><span>x${i.quantity}</span></div>`).join('')}

@@ -16,6 +16,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// 桌號對應名稱
+const tableNames = {
+    "1": "雷姆桌", "2": "白上桌", "3": "黑川桌",
+    "4": "有馬桌", "5": "MEN桌", "6": "六飧桌"
+};
+
 let cart = [];
 
 // 頁面切換
@@ -110,6 +116,10 @@ window.submitOrder = async () => {
     const tableEl = document.getElementById('table-num');
     const tableId = tableEl ? tableEl.value : "未知";
 
+    // --- 新增：取得對應的桌名 ---
+    // 如果找不到對應名稱，就顯示原本的數字加上"號桌"作為備案
+    const tableName = tableNames[tableId] || `${tableId}號桌`;
+
     // 2. 處理該桌的「組數」遞增 (獨立於總單號)
     // 我們將組數存放在 tableSessions/table1 這樣的路徑下
     const tableSessionRef = ref(db, `tableSessions/table${tableId}`);
@@ -136,7 +146,8 @@ window.submitOrder = async () => {
     });
 
     // 5. 成功後顯示
-    document.getElementById('display-order-number').innerText = `${tableId}桌第${sessionNum}組`;
+    // 修改這裡：讓使用者在成功頁面也看到「雷姆桌第 X 組」
+    document.getElementById('display-order-number').innerText = `${tableName}第${sessionNum}組`;
     cart = []; // 清空購物車
     updateCartIcon();
     showPage('success-page');

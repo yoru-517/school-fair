@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>日研咖啡所 - 專業後台管理</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
@@ -23,11 +23,12 @@
   <div id="tab-dashboard" class="tab-content active">
     <h2 style="margin: 0 0 15px 0; font-size: 1.2rem;">📌 即時桌位狀態</h2>
     <div class="table-grid">
-      <div id="table-card-1" class="table-card"><h3>1 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
-      <div id="table-card-2" class="table-card"><h3>2 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
-      <div id="table-card-3" class="table-card"><h3>3 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
-      <div id="table-card-4" class="table-card"><h3>4 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
-      <div id="table-card-5" class="table-card"><h3>5 號桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-1" class="table-card"><h3>雷姆桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-2" class="table-card"><h3>白上桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-3" class="table-card"><h3>黑川桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-4" class="table-card"><h3>有馬桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-5" class="table-card"><h3>MEN桌</h3><div class="card-content empty-hint">無訂單</div></div>
+      <div id="table-card-6" class="table-card"><h3>六飧桌</h3><div class="card-content empty-hint">無訂單</div></div>
     </div>
     <p style="font-size: 0.8rem; color: #7f8c8d; margin-top: 10px;">※ 顯示該桌最新一筆未結單資訊</p>
   </div>
@@ -36,26 +37,27 @@
     <div class="detail-header">
       <span style="font-weight: bold; font-size: 1.2rem;">📋 訂單明細</span>
       <select id="detail-table-select" onchange="filterDetails()">
-        <option value="all">全部</option>
-        <option value="1">1 號桌</option>
-        <option value="2">2 號桌</option>
-        <option value="3">3 號桌</option>
-        <option value="4">4 號桌</option>
-        <option value="5">5 號桌</option>
+        <option value="all">顯示全部</option>
+        <option value="1">雷姆桌</option>
+        <option value="2">白上桌</option>
+        <option value="3">黑川桌</option>
+        <option value="4">有馬桌</option>
+        <option value="5">MEN桌</option>
+        <option value="6">六飧桌</option>
       </select>
     </div>
 
     <div class="status-columns">
-      <div class="column col-pending">
-        <h4>點餐中</h4>
+      <div class="column">
+        <h4 style="color: #e67e22; margin-top:0;">點餐中 ⏳</h4>
         <div id="list-pending" class="order-list"></div>
       </div>
-      <div class="column col-served">
-        <h4>已出餐</h4>
+      <div class="column">
+        <h4 style="color: #3498db; margin-top:0;">已出餐 ✅</h4>
         <div id="list-served" class="order-list"></div>
       </div>
-      <div class="column col-completed">
-        <h4>已結單</h4>
+      <div class="column">
+        <h4 style="color: #27ae60; margin-top:0;">已結單 💰</h4>
         <div id="list-completed" class="order-list"></div>
       </div>
     </div>
